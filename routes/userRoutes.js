@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 const router = express.Router();
 import authMiddleware from '../middleware/authMiddleware.js'; 
+import { IdentificationIcon } from "@heroicons/react/16/solid";
 
 router.post("/signup", async (req, res) => {
   const { name, email, password, age } = req.body;
@@ -47,13 +48,13 @@ router.post("/login", async (req, res) => {
       });
     
   }
-
   const token = jwt.sign({id: userExists._id, email: userExists.email, role : userExists.role}, process.env.SECRET_KEY, {expiresIn : '1h'});
-  return res.status(201).json({ message: `${email}, login successfull. `, token });
+  return res.status(201).json({message: `${email} login successful. ID is: ${userExists._id}`, token});
 });
 
+
 router.get("/admin", authMiddleware(['admin']), (req, res) => {
-    res.json({ message: `Welcome Admin ${req.user.email}` });
+    res.json({ message: `Welcome Admin ${req.user.email} ${req.user._id}` });
 });
 
 
@@ -74,30 +75,28 @@ router.get("/admin", authMiddleware(['admin']), (req, res) => {
     return res.status(200).json({ message: "User deleted successfully" });
   })
 
-  router.put("/update", authMiddleware(["admin", "user"]), async (req, res) => {
-        const { email, name, age, password } = req.body;
-      
-        const userExists = await user.findOne({ email });
-      
-        if (!userExists) {
-          return res.status(404).json({ message: "User not found" });
-        }
-      
-        let hashedPassword = userExists.password;
-        if (password) {
-          hashedPassword = await bcrypt.hash(password, 10);
-        }
-      
-        userExists.name = name || userExists.name;
-        userExists.age = age || userExists.age;
-        userExists.password = hashedPassword;
-      
-        await userExists.save();
-      
-        return res.status(200).json({ message: "User updated successfully", user: userExists });
-      
-
-});
+router.put("/update/:id", authMiddleware(["admin", "user"]), async (req, res) => {
+    const { id } = req.params;
+    const { name, email, age, password } = req.body; 
+    const userExists = await user.findById(id);
+    
+    if (!userExists) {
+      return res.status(404).json({ message: "User not found" });
+    }
+  
+    if (name) userExists.name = name;
+    if (email) userExists.email = email;
+    if (age) userExists.age = age;
+  
+    if (password) {
+      userExists.password = await bcrypt.hash(password, 10);
+    }
+  
+    await userExists.save();
+  
+    return res.status(200).json({ message: "User updated successfully", user: userExists });
+  });
+  
   
 
 export default router;
