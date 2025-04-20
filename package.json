@@ -1,20 +1,25 @@
 {
-  "name": "project",
+  "name": "backend-assignment-",
   "version": "1.0.0",
-  "description": "This is to create the user and he can do the following operations like login, update, delete.",
+  "description": "This is the e-commeres assignment",
   "main": "server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "Akhil Rakesh",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkhilRoyal-5187/backend-assignment-.git"
+  },
+  "author": "Akhil Royal",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AkhilRoyal-5187/backend-assignment-/issues"
+  },
+  "homepage": "https://github.com/AkhilRoyal-5187/backend-assignment-#readme",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.13.2"
+    "bcryptjs": "^3.0.2",
+    "jsonwebtoken": "^9.0.2"
   }
 }
